@@ -1,7 +1,7 @@
 
 import os
-currentDir = os.path.dirname(os.path.abspath(__file__))
-os.chdir(currentDir)
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+os.chdir(CURRENT_DIR)
 import sys
 import time
 import datetime
@@ -41,13 +41,23 @@ def exportStateToCsv(state: ComputerState, csvFilePath: str):
 
     dataFrame.to_csv(csvFilePath, mode="a", index=False, header=False)
 
-def exportStateToDailyCsv(state: ComputerState):
+def getDailyCsvPath() -> str:
 
     currentDate = datetime.datetime.now().strftime("%b_%d_%Y")
     csvFileName = f"{currentDate}.csv"
-    savePath = os.path.join(".\\Reports", csvFileName)
+    return os.path.join(".\\Reports", csvFileName)
 
-    exportStateToCsv(state, savePath)
+def exportStateToDailyCsv(state: ComputerState):
+
+    dailyCsvPath = getDailyCsvPath()
+    exportStateToCsv(state, dailyCsvPath)
+
+def batchExportToDailyCsv(states: list[ComputerState]):
+
+    dailyCsvPath = getDailyCsvPath()
+
+    for state in states:
+        exportStateToCsv(state, dailyCsvPath)
 
 def printUsageMessage():
 
@@ -72,14 +82,14 @@ if __name__=="__main__":
 
     minuteInterval = int(sys.argv[1])
     batteryThreshold = int(sys.argv[2])
-
-    currentState = getCurrentComputerState()
-
+    
     if minuteInterval < 1 or minuteInterval > 60:
 
         print("Monitor interval must be at least 1 minute, and at most 60", file=sys.stderr)
         exit(1)
 
+    currentState = getCurrentComputerState()
+    
     if batteryThreshold < 0 and not currentState.pluggedIn:
         
         print("Battery threshold is negative and computer is already unplugged.", file=sys.stderr)
@@ -89,6 +99,9 @@ if __name__=="__main__":
 
         print("Battery threshold cannot be lower than current battery percentage.", file=sys.stderr)
         exit(1)
+
+    stateBuffer: list[ComputerState] = []
+    maxStateBufferSize = 5
 
     os.system("cls")
     # START MONITORING
@@ -102,11 +115,19 @@ if __name__=="__main__":
         currentState = getCurrentComputerState()
         print(currentState, end="\t")
 
-        try:
-            exportStateToDailyCsv(currentState)
-            print("(Saved to CSV)")
-        except PermissionError:
-            print("(Unable to save, CSV is open)")
+        stateBuffer.append(currentState)
+
+        if len(stateBuffer) >= maxStateBufferSize:
+            
+            try:
+                batchExportToDailyCsv(stateBuffer)
+                print("(Saved to CSV)", end="")
+                stateBuffer.clear()
+
+            except PermissionError:
+                print("(Unable to save, daily CSV is open)", end="")
+
+        print(end="\n", flush=True)
 
         if currentState.batteryPercent <= batteryThreshold:
 
@@ -120,4 +141,4 @@ if __name__=="__main__":
             AutomationUtils.shutdown()
             exit(0)
 
-        time.sleep(60 * minuteInterval)
+        time.sleep(5)
