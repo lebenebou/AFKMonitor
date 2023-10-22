@@ -75,9 +75,9 @@ if __name__=="__main__":
 
     currentState = getCurrentComputerState()
 
-    if minuteInterval < 1:
+    if minuteInterval < 1 or minuteInterval > 60:
 
-        print("Monitor interval must be at least 1 minute.", file=sys.stderr)
+        print("Monitor interval must be at least 1 minute, and at most 60", file=sys.stderr)
         exit(1)
 
     if batteryThreshold < 0 and not currentState.pluggedIn:
