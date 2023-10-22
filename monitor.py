@@ -26,20 +26,13 @@ def getCurrentComputerState() -> ComputerState:
 
 def exportStateToCsv(state: ComputerState, csvFilePath: str):
 
-    dataFrame = pandas.DataFrame([state.toDict()])
-    
     if not os.path.exists(csvFilePath):
 
         columnTitles = state.toDict().keys()
-        dataFrame = pandas.DataFrame(columns=columnTitles)
-        dataFrame.to_csv(csvFilePath, index=False, header=True)
+        columnsDataFrame = pandas.DataFrame(columns=columnTitles)
+        columnsDataFrame.to_csv(csvFilePath, index=False, header=True)
 
-    dataFrame = pandas.DataFrame([state.toDict()])
-
-    dataFrame.replace({True: "Yes", False: "No"}, inplace=True)
-    dataFrame["time"] = dataFrame["time"].apply(TimeUtils.epochToLocal)
-
-    dataFrame.to_csv(csvFilePath, mode="a", index=False, header=False)
+    state.toDataFrame().to_csv(csvFilePath, mode="a", index=False, header=False)
 
 def getDailyCsvPath() -> str:
 

@@ -1,5 +1,6 @@
 
 import json
+import pandas
 from Utils import TimeUtils
 
 class ComputerState:
@@ -33,3 +34,12 @@ class ComputerState:
 
     def toJson(self) -> str:
         return json.dumps(self.toDict())
+    
+    def toDataFrame(self) -> pandas.DataFrame:
+
+        dataFrame = pandas.DataFrame([self.toDict()])
+        
+        dataFrame.replace({True: "Yes", False: "No"}, inplace=True)
+        dataFrame["time"] = dataFrame["time"].apply(TimeUtils.epochToLocal)
+        
+        return dataFrame
