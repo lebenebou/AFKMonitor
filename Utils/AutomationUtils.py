@@ -1,7 +1,6 @@
 
 import time
 import pyautogui
-import psutil
 import subprocess
 
 # Power Utils
