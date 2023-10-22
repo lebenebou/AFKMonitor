@@ -134,4 +134,4 @@ if __name__=="__main__":
             AutomationUtils.shutdown()
             exit(0)
 
-        time.sleep(5)
+        time.sleep(60 * minuteInterval)
