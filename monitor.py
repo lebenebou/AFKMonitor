@@ -3,6 +3,7 @@ import os
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 os.chdir(CURRENT_DIR)
 import sys
+import argparse
 import time
 import pandas
 
@@ -47,29 +48,18 @@ def batchExportToDailyCsv(states: list[ComputerState]):
     combinedDataFrame = pandas.concat(dataFrames, ignore_index=True)
     combinedDataFrame.to_csv(dailyCsvPath, mode="a", index=False, header=True)
 
-def printUsageMessage():
-
-    usageMessage = "Usage: python monitor.py <interval> <battery threshold> (Negative threshold to shutdown when unplugged)"
-    print(usageMessage, file=sys.stderr)
-
 if __name__=="__main__":
 
     os.system("cls")
-    if len(sys.argv) != 3:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("minuteInterval", type=int, help="Check computer state every interval")
+    parser.add_argument("batteryThreshold", type=int, help="Battery percentage threshold (negative to shutdown when unplugged)")
+    parser.add_argument("maxBufferSize", type=int, nargs="?", default=5, help="[optional] Maximum size of state buffer before exporting to CSV")
 
-        printUsageMessage()
-        exit(1)
-
-    try:
-        int(sys.argv[1])
-        int(sys.argv[2])
-    except ValueError:
-        print("Invalid arguments", file=sys.stderr)
-        printUsageMessage()
-        exit(1)
-
-    minuteInterval = int(sys.argv[1])
-    batteryThreshold = int(sys.argv[2])
+    args = parser.parse_args()
+    minuteInterval = args.minuteInterval
+    batteryThreshold = args.batteryThreshold
+    maxBufferSize = args.maxBufferSize
     
     if minuteInterval < 1 or minuteInterval > 60:
 
@@ -85,7 +75,7 @@ if __name__=="__main__":
 
     if currentState.batteryPercent <= batteryThreshold:
 
-        print("Battery threshold cannot be lower than current battery percentage.", file=sys.stderr)
+        print(f"Battery threshold cannot be lower than current battery percentage ({currentState.batteryPercent}%).", file=sys.stderr)
         exit(1)
 
     stateBuffer: list[ComputerState] = []
