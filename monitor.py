@@ -23,33 +23,29 @@ def getCurrentComputerState() -> ComputerState:
         InternetUtils.isConnected()
     )
 
-def exportStateToCsv(state: ComputerState, csvFilePath: str):
-
-    if not os.path.exists(csvFilePath):
-
-        columnTitles = state.toDict().keys()
-        columnsDataFrame = pandas.DataFrame(columns=columnTitles)
-        columnsDataFrame.to_csv(csvFilePath, index=False, header=True)
-
-    state.toDataFrame().to_csv(csvFilePath, mode="a", index=False, header=False)
-
 def getDailyCsvPath() -> str:
 
     currentDate = TimeUtils.getCurrentDate()
     csvFileName = f"{currentDate}.csv"
     return os.path.join(".\\Reports", csvFileName)
 
-def exportStateToDailyCsv(state: ComputerState):
-
-    dailyCsvPath = getDailyCsvPath()
-    exportStateToCsv(state, dailyCsvPath)
-
 def batchExportToDailyCsv(states: list[ComputerState]):
 
+    if len(states) == 0:
+        raise ValueError("Cannot batch export an empty state list")
+    
     dailyCsvPath = getDailyCsvPath()
+    dataFrame = pandas.DataFrame()
+    
+    if not os.path.exists(dailyCsvPath):
 
-    for state in states:
-        exportStateToCsv(state, dailyCsvPath)
+        columnTitles = states[0].toDict().keys()
+        dataFrame = pandas.DataFrame(columns=columnTitles)
+        dataFrame.to_csv(dailyCsvPath, index=False, header=True)
+
+    dataFrames = [state.toDataFrame() for state in states]
+    combinedDataFrame = pandas.concat(dataFrames, ignore_index=True)
+    combinedDataFrame.to_csv(dailyCsvPath, mode="a", index=False, header=True)
 
 def printUsageMessage():
 
