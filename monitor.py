@@ -58,7 +58,7 @@ if __name__=="__main__":
     args = parser.parse_args()
     minuteInterval = args.minuteInterval
     batteryThreshold = args.batteryThreshold
-    maxBufferSize = args.maxBufferSize
+    maxStateBufferSize = args.maxBufferSize
     
     if minuteInterval < 1 or minuteInterval > 60:
 
@@ -78,7 +78,6 @@ if __name__=="__main__":
         exit(1)
 
     stateBuffer: list[ComputerState] = []
-    maxStateBufferSize = 5
 
     os.system("cls")
     # START MONITORING
