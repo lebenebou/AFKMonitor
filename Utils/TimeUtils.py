@@ -1,5 +1,6 @@
 
 import time
+import datetime
 
 def getCurrentEpochTime() -> int:
     return int(time.time())
@@ -16,3 +17,6 @@ def countDown(seconds: int):
         print(timeLeft, end="\r")
         time.sleep(1)
         seconds -= 1
+
+def getCurrentDate() -> str:
+    return datetime.datetime.now().strftime("%b_%d_%Y")

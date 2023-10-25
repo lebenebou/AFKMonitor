@@ -4,7 +4,6 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 os.chdir(CURRENT_DIR)
 import sys
 import time
-import datetime
 import pandas
 
 from Utils import AutomationUtils
@@ -36,7 +35,7 @@ def exportStateToCsv(state: ComputerState, csvFilePath: str):
 
 def getDailyCsvPath() -> str:
 
-    currentDate = datetime.datetime.now().strftime("%b_%d_%Y")
+    currentDate = TimeUtils.getCurrentDate()
     csvFileName = f"{currentDate}.csv"
     return os.path.join(".\\Reports", csvFileName)
 
