@@ -36,13 +36,12 @@ def batchExportToDailyCsv(states: list[ComputerState]):
         raise ValueError("Cannot batch export an empty state list")
     
     dailyCsvPath = getDailyCsvPath()
-    dataFrame = pandas.DataFrame()
     
     if not os.path.exists(dailyCsvPath):
 
         columnTitles = states[0].toDict().keys()
-        dataFrame = pandas.DataFrame(columns=columnTitles)
-        dataFrame.to_csv(dailyCsvPath, index=False, header=True)
+        columnTitles = pandas.DataFrame(columns=columnTitles)
+        columnTitles.to_csv(dailyCsvPath, index=False, header=True)
 
     dataFrames = [state.toDataFrame() for state in states]
     combinedDataFrame = pandas.concat(dataFrames, ignore_index=True)
