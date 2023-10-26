@@ -33,7 +33,7 @@ def getDailyCsvPath() -> str:
 def batchExportToDailyCsv(states: list[ComputerState]):
 
     if len(states) == 0:
-        raise ValueError("Cannot batch export an empty state list")
+        return
     
     dailyCsvPath = getDailyCsvPath()
     
