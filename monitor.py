@@ -30,7 +30,7 @@ def batchExportToDailyCsv(states: list[ComputerState]):
 
     dataFrames = [state.toDataFrame() for state in states]
     combinedDataFrame = pandas.concat(dataFrames, ignore_index=True)
-    combinedDataFrame.to_csv(dailyCsvPath, mode="a", index=False, header=True)
+    combinedDataFrame.to_csv(dailyCsvPath, mode="a", index=False, header=False)
 
 if __name__=="__main__":
 
