@@ -65,6 +65,11 @@ if __name__=="__main__":
         print("Monitor interval must be at least 1 minute, and at most 60", file=sys.stderr)
         exit(1)
 
+    if maxStateBufferSize < 0 or maxStateBufferSize > 50:
+
+        print("maxBufferSize is invalid, must be between 0 and 100", file=sys.stderr)
+        exit(1)
+
     currentState = getCurrentComputerState()
     
     if batteryThreshold < 0 and not currentState.pluggedIn:
