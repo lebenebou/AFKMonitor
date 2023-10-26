@@ -6,18 +6,8 @@ import sys
 import argparse
 import pandas
 
-from Utils import AutomationUtils, BatteryUtils, InternetUtils, TimeUtils
+from Utils import AutomationUtils, TimeUtils
 from ComputerState import ComputerState
-
-def getCurrentComputerState() -> ComputerState:
-
-    return ComputerState(
-        
-        TimeUtils.getCurrentEpochTime(),
-        BatteryUtils.getBatteryPercentage(),
-        BatteryUtils.getChargingState(),
-        InternetUtils.isConnected()
-    )
 
 def getDailyCsvPath() -> str:
 
@@ -65,7 +55,7 @@ if __name__=="__main__":
         print("maxBufferSize is invalid, must be between 0 and 100", file=sys.stderr)
         exit(1)
 
-    currentState = getCurrentComputerState()
+    currentState = ComputerState()
     
     if batteryThreshold < 0 and not currentState.pluggedIn:
         
@@ -88,7 +78,7 @@ if __name__=="__main__":
     
     while True:
 
-        currentState = getCurrentComputerState()
+        currentState = ComputerState()
         print(currentState, end="\t")
 
         stateBuffer.append(currentState)

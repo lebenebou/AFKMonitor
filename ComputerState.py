@@ -1,16 +1,17 @@
 
 import json
 import pandas
-from Utils import TimeUtils
+
+from Utils import TimeUtils, BatteryUtils, InternetUtils
 
 class ComputerState:
 
-    def __init__(self, epochTime: int, batteryPercent: int, pluggedIn: bool, connectedWiFi: bool):
+    def __init__(self):
 
-        self.epochTime = epochTime
-        self.batteryPercent = batteryPercent
-        self.pluggedIn = pluggedIn
-        self.connectedWiFi = connectedWiFi
+        self.epochTime = TimeUtils.getCurrentEpochTime()
+        self.batteryPercent = BatteryUtils.getBatteryPercentage()
+        self.pluggedIn = BatteryUtils.getChargingState()
+        self.connectedWiFi = InternetUtils.isConnected()
 
     def localTime(self) -> str:
         return TimeUtils.epochToLocal(self.epochTime)
