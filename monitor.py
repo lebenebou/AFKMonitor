@@ -4,14 +4,9 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 os.chdir(CURRENT_DIR)
 import sys
 import argparse
-import time
 import pandas
 
-from Utils import AutomationUtils
-from Utils import BatteryUtils
-from Utils import InternetUtils
-from Utils import TimeUtils
-
+from Utils import AutomationUtils, BatteryUtils, InternetUtils, TimeUtils
 from ComputerState import ComputerState
 
 def getCurrentComputerState() -> ComputerState:
@@ -122,4 +117,4 @@ if __name__=="__main__":
             AutomationUtils.shutdown()
             exit(0)
 
-        time.sleep(60 * minuteInterval)
+        TimeUtils.wait(60 * minuteInterval)
