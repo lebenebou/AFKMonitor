@@ -2,6 +2,7 @@
 import os
 CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 os.chdir(CURRENT_DIR)
+
 import sys
 import argparse
 import pandas
@@ -29,8 +30,8 @@ def batchExportToDailyCsv(states: list[ComputerState]):
         columnTitles.to_csv(dailyCsvPath, index=False, header=True)
 
     dataFrames = [state.toDataFrame() for state in states]
-    combinedDataFrame = pandas.concat(dataFrames, ignore_index=True)
-    combinedDataFrame.to_csv(dailyCsvPath, mode="a", index=False, header=False)
+    combinedDataFrames = pandas.concat(dataFrames, ignore_index=True)
+    combinedDataFrames.to_csv(dailyCsvPath, mode="a", index=False, header=False)
 
 if __name__=="__main__":
 
@@ -67,14 +68,14 @@ if __name__=="__main__":
         print(f"Battery threshold cannot be lower than current battery percentage ({currentState.batteryPercent}%).", file=sys.stderr)
         exit(1)
 
-    stateBuffer: list[ComputerState] = []
-
     os.system("cls")
     # START MONITORING
     if batteryThreshold < 0:
         print(f"Monitoring every {minuteInterval} minutes until unplugged...\n")
     else:
         print(f"Monitoring every {minuteInterval} minutes with a battery threshold of {batteryThreshold}%...\n")
+
+    stateBuffer: list[ComputerState] = []
     
     while True:
 
