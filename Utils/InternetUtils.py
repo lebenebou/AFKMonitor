@@ -14,7 +14,3 @@ def isConnected() -> bool:
             continue
 
     return False
-
-if __name__ == "__main__":
-
-    print(isConnected())
