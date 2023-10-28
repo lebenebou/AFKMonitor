@@ -2,8 +2,19 @@
 import urllib.request
 
 def isConnected() -> bool:
-    try:
-        urllib.request.urlopen("https://www.google.com", timeout=1)
-        return True
-    except Exception:
-        return False
+
+    websites_to_check = ["https://www.google.com", "https://www.microsoft.com", "https://www.apple.com"]
+
+    for website in websites_to_check:
+
+        try:
+            urllib.request.urlopen(website, timeout=5)
+            return True
+        except (urllib.error.URLError, ConnectionError):
+            continue
+
+    return False
+
+if __name__ == "__main__":
+
+    print(isConnected())
