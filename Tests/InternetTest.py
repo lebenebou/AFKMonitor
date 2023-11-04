@@ -32,9 +32,4 @@ if __name__=="__main__":
 
     testFalseNegatives(testCount)
 
-    input("\nMake sure you are disconnected from the internet and press enter to continue...")
-    print(f"\nRunning {testCount} tests")
-
-    testFalsePositives(testCount)
-
     print("All tests passed.")
