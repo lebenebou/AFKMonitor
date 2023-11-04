@@ -41,9 +41,9 @@ class ComputerState:
             "charging": self.pluggedIn,
             "connected": self.connectedWiFi,
 
-            "MemUsageMB": self.TotalMemoryUsageMB,
+            "memUsageMB": self.TotalMemoryUsageMB,
             "hungriestProc": self.HungriestProcessName,
-            "hungryProcMemUsage": self.HungriestProcessMemoryUsageMB
+            "hungryProcMem": self.HungriestProcessMemoryUsageMB
         }
 
     def toJson(self) -> str:

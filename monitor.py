@@ -14,7 +14,7 @@ def getDailyCsvPath() -> str:
 
     currentDate = TimeUtils.getCurrentDate()
     csvFileName = f"{currentDate}.csv"
-    return os.path.join(".\\Reports", csvFileName)
+    return os.path.join(CURRENT_DIR, "Reports", csvFileName)
 
 def batchExportToDailyCsv(states: list[ComputerState]):
 
@@ -53,7 +53,7 @@ if __name__=="__main__":
 
     if maxStateBufferSize < 0 or maxStateBufferSize > 50:
 
-        print("maxBufferSize is invalid, must be between 0 and 100", file=sys.stderr)
+        print("maxBufferSize is invalid, must be between 0 and 50", file=sys.stderr)
         exit(1)
 
     currentState = ComputerState()
