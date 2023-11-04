@@ -14,10 +14,11 @@ class ComputerState:
         self.pluggedIn = BatteryUtils.getChargingState()
         self.connectedWiFi = InternetUtils.isConnected()
 
-        currentMemoryState = ProcessUtils.getCurrentMemoryState()
-        self.TotalMemoryUsageMB = currentMemoryState.totalMemoryUsageMB
-        self.HungriestProcessName = currentMemoryState.hungriestProcessName
-        self.HungriestProcessMemoryUsageMB = currentMemoryState.hungriestProcessMemoryUsageMB
+        memoryState = ProcessUtils.getCurrentMemoryState()
+        self.runningProcesses = memoryState.runningProcesses
+        self.TotalMemoryUsageMB = memoryState.totalMemoryUsageMB
+        self.HungriestProcessName = memoryState.hungriestProcessName
+        self.HungriestProcessMemoryUsageMB = memoryState.hungriestProcessMemoryUsageMB
 
     def localTime(self) -> str:
         return TimeUtils.epochToLocal(self.epochTime)
@@ -41,6 +42,7 @@ class ComputerState:
             "charging": self.pluggedIn,
             "connected": self.connectedWiFi,
 
+            "runningProc": self.runningProcesses,
             "memUsageMB": self.TotalMemoryUsageMB,
             "hungriestProc": self.HungriestProcessName,
             "hungryProcMem": self.HungriestProcessMemoryUsageMB
