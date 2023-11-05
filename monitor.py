@@ -35,6 +35,26 @@ def batchExportToDailyCsv(states: list[ComputerState]):
     combinedDataFrames = pandas.concat(dataFrames, ignore_index=True)
     combinedDataFrames.to_csv(dailyCsvPath, mode="a", index=False, header=False)
 
+def handleKeyboardInterrupt(stateBuffer: list[ComputerState]):
+
+    if len(stateBuffer) == 0:
+        exit(0)
+
+    single: bool = (len(stateBuffer) == 1)
+    message = f"\nYou still have {len(stateBuffer)} unsaved state{(not single)*'s'} in the buffer!\nDo you want to save {'it' if single else 'them'} to CSV? (y/n): "
+    
+    if input(message).strip().lower() != "y":
+        exit(0)
+
+    try:
+        batchExportToDailyCsv(stateBuffer)
+
+    except PermissionError:
+        print("Unable to save, daily CSV is open.\n")
+        return
+        
+    exit(0)
+
 if __name__=="__main__":
 
     os.system("cls")
@@ -110,4 +130,7 @@ if __name__=="__main__":
             shutdown()
             exit(0)
 
-        wait(minuteInterval)
+        try:
+            wait(minuteInterval)
+        except KeyboardInterrupt:
+            handleKeyboardInterrupt(stateBuffer)
