@@ -6,7 +6,7 @@ class Process:
     def __init__(self, name: str, memoryUsageMB: float):
 
         self.name = name
-        self.memoryUsageMB = round(memoryUsageMB, 2)
+        self.memoryUsageMB = memoryUsageMB
 
     @staticmethod
     def extractProcessFromLine(line: str):
@@ -51,10 +51,6 @@ class MemoryState:
 
         self.hungriestProcessName = hungriestProcess.name
         self.hungriestProcessMemoryUsageMB = hungriestProcess.memoryUsageMB
-
-        # rounding
-        self.totalMemoryUsageMB = round(self.totalMemoryUsageMB, 2)
-        self.hungriestProcessMemoryUsageMB = round(self.hungriestProcessMemoryUsageMB, 2)
 
 def getCurrentMemoryState() -> MemoryState:
 

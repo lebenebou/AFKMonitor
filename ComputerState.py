@@ -55,7 +55,14 @@ class ComputerState:
 
         dataFrame = pandas.DataFrame([self.toDict()])
         
+        # boolean values
         dataFrame.replace({True: "Yes", False: "No"}, inplace=True)
+
+        # convert time from echop to local. example: 2:15 PM instead of 1612341234
         dataFrame["time"] = dataFrame["time"].apply(TimeUtils.epochToLocal)
+
+        # round floats to 2 decimal places
+        dataFrame["memUsageMB"] = dataFrame["memUsageMB"].apply(lambda x: round(x, 2))
+        dataFrame["hungryProcMem"] = dataFrame["hungryProcMem"].apply(lambda x: round(x, 2))
         
         return dataFrame
