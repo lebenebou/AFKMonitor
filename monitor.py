@@ -7,12 +7,14 @@ import sys
 import argparse
 import pandas
 
-from Utils import AutomationUtils, TimeUtils
 from ComputerState import ComputerState
+
+from Utils.AutomationUtils import shutdown
+from Utils.TimeUtils import getCurrentDate, wait
 
 def getDailyCsvPath() -> str:
 
-    currentDate = TimeUtils.getCurrentDate()
+    currentDate = getCurrentDate()
     csvFileName = f"{currentDate}.csv"
     return os.path.join(CURRENT_DIR, "Reports", csvFileName)
 
@@ -96,16 +98,16 @@ if __name__=="__main__":
 
         print(end="\n", flush=True)
 
-        if currentState.batteryPercent <= batteryThreshold:
-
-            print("Battery threshold reached. Shutting down...")
-            AutomationUtils.shutdown()
-            exit(0)
-
         if batteryThreshold < 0 and not currentState.pluggedIn:
             
             print("Computer was unplugged. Shutting down...")
-            AutomationUtils.shutdown()
+            shutdown()
             exit(0)
 
-        TimeUtils.wait(60 * minuteInterval)
+        if currentState.batteryPercent <= batteryThreshold:
+
+            print("Battery threshold reached. Shutting down...")
+            shutdown()
+            exit(0)
+
+        wait(minuteInterval)

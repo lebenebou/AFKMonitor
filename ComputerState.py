@@ -2,26 +2,29 @@
 import json
 import pandas
 
-from Utils import TimeUtils, BatteryUtils, InternetUtils, ProcessUtils
+from Utils.TimeUtils import getCurrentEpochTime, epochToLocal
+from Utils.InternetUtils import isConnected
+from Utils.BatteryUtils import getBatteryPercentage, getChargingState
+from Utils.ProcessUtils import getCurrentMemoryState
 
 class ComputerState:
 
     def __init__(self):
 
-        self.epochTime = TimeUtils.getCurrentEpochTime()
+        self.epochTime = getCurrentEpochTime()
 
-        self.batteryPercent = BatteryUtils.getBatteryPercentage()
-        self.pluggedIn = BatteryUtils.getChargingState()
-        self.connectedWiFi = InternetUtils.isConnected()
+        self.batteryPercent = getBatteryPercentage()
+        self.pluggedIn = getChargingState()
+        self.connectedWiFi = isConnected()
 
-        memoryState = ProcessUtils.getCurrentMemoryState()
+        memoryState = getCurrentMemoryState()
         self.runningProcesses = memoryState.runningProcesses
         self.TotalMemoryUsageMB = memoryState.totalMemoryUsageMB
         self.HungriestProcessName = memoryState.hungriestProcessName
         self.HungriestProcessMemoryUsageMB = memoryState.hungriestProcessMemoryUsageMB
 
     def localTime(self) -> str:
-        return TimeUtils.epochToLocal(self.epochTime)
+        return epochToLocal(self.epochTime)
 
     def __str__(self) -> str:
 
@@ -59,7 +62,7 @@ class ComputerState:
         dataFrame.replace({True: "Yes", False: "No"}, inplace=True)
 
         # convert time from echop to local. example: 2:15 PM instead of 1612341234
-        dataFrame["time"] = dataFrame["time"].apply(TimeUtils.epochToLocal)
+        dataFrame["time"] = dataFrame["time"].apply(epochToLocal)
 
         # round floats to 2 decimal places
         dataFrame["memUsageMB"] = dataFrame["memUsageMB"].apply(lambda x: round(x, 2))

@@ -6,14 +6,14 @@ os.chdir(CURRENT_DIR)
 import sys
 sys.path.append("..")
 
-from Utils import InternetUtils
+from Utils.InternetUtils import isConnected
 
 def runTests(trueInternetState: bool, testCount: int):
 
     for i in range(testCount):
 
         print(f"Running test {i+1}...", end="\r", flush=True)
-        assert InternetUtils.isConnected() == trueInternetState, f"isConnected() returned {not trueInternetState}"
+        assert isConnected() == trueInternetState, f"isConnected() returned {not trueInternetState}"
 
     print(f"{testCount} tests passed." + " "*20, flush=True)
 

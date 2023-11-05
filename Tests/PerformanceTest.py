@@ -5,8 +5,12 @@ os.chdir(CURRENT_DIR)
 
 import sys
 sys.path.append("..")
+
 from ComputerState import ComputerState
-from Utils import InternetUtils, ProcessUtils, BatteryUtils
+
+from Utils.InternetUtils import isConnected
+from Utils.BatteryUtils import getBatteryPercentage
+from Utils.ProcessUtils import getCurrentMemoryState
 
 import time
 
@@ -23,7 +27,7 @@ def runPerformanceTest(func, testCount: int, msThreshold: int):
     averageTimeMs = 0
     functionName = func.__name__
 
-    print(f"\nRunning {testCount} tests for {functionName}...")
+    print(f"\nRunning {testCount} tests for {functionName}...", flush=True)
     for i in range(1, testCount+1):
 
         timeMs = benchMarkFuntion(func)
@@ -34,12 +38,14 @@ def runPerformanceTest(func, testCount: int, msThreshold: int):
         averageTimeMs += timeMs
 
     averageTimeMs /= testCount
-    print(f"Tests finished. Average time for {functionName}: {averageTimeMs} ms")
+    print(f"Tests finished. Average time for {functionName}: {averageTimeMs} ms", flush=True)
 
 if __name__=="__main__":
     
-    runPerformanceTest(testCount=10, msThreshold=500, func=InternetUtils.isConnected)
-    runPerformanceTest(testCount=10, msThreshold=500, func=ProcessUtils.getCurrentMemoryState)
-    runPerformanceTest(testCount=10, msThreshold=50, func=BatteryUtils.getBatteryPercentage)
+    runPerformanceTest(testCount=10, msThreshold=500, func=isConnected)
+    runPerformanceTest(testCount=10, msThreshold=500, func=getCurrentMemoryState)
+    runPerformanceTest(testCount=10, msThreshold=50, func=getBatteryPercentage)
     
     runPerformanceTest(testCount=10, msThreshold=1000, func=ComputerState)
+
+    print("\nAll tests passed.", flush=True)

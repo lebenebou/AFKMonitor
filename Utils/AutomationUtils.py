@@ -1,7 +1,5 @@
 
-import time
 import pyautogui
-import subprocess
 
 # Power Utils
 def executePowerHotkey(key: str):

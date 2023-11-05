@@ -1,5 +1,5 @@
 
-from Utils import CmdUtils
+from Utils.CmdUtils import runCommand
 
 class Process:
 
@@ -24,7 +24,7 @@ class Process:
     @staticmethod
     def getRunningProcesses() -> list:
 
-        commandOutput = CmdUtils.runCommand("tasklist /fo csv /nh").stdout
+        commandOutput = runCommand("tasklist /fo csv /nh").stdout
         lines = commandOutput.splitlines()
 
         processes = [Process.extractProcessFromLine(line) for line in lines]

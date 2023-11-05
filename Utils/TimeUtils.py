@@ -11,5 +11,5 @@ def epochToLocal(epochTime: int) -> str:
 def getCurrentDate() -> str:
     return datetime.datetime.now().strftime("%b_%d_%Y")
 
-def wait(seconds: int):
-    time.sleep(seconds)
+def wait(minutes: int):
+    time.sleep(60 * minutes)
