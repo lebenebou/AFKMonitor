@@ -32,4 +32,4 @@ if __name__=="__main__":
 
     testFalseNegatives(testCount)
 
-    print("All tests passed.")
+    print("All tests passed. isConnected never returned False.")

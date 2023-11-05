@@ -19,3 +19,8 @@ The computer state is recorded every 15 minutes. The computer will not shutdown.
 
 `python monitor.py 10 -1 0`
 The computer state is recorded every 10 minutes. The computer will shutdown **when unplugged**. The computer states are written to the CSV file immediately.
+
+## Tests
+`./Tests` contains tests for both performance and functionality.
+
+To run a performance test, simply run `python PerformanceTest.py`. This will benchmark the main functions of the project and makes identifying bottlenecks easier.
