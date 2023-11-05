@@ -40,24 +40,22 @@ class Process:
 
 class MemoryState:
 
-    def __init__(self, runningProcesses: int, totalMemoryUsageMB: float, hungriestProcessName: str, hungriestProcessMemoryUsageMB: float):
+    def __init__(self):
         
-        self.runningProcesses = runningProcesses
-        self.totalMemoryUsageMB = round(totalMemoryUsageMB, 2)
-        self.hungriestProcessName = hungriestProcessName
-        self.hungriestProcessMemoryUsageMB = round(hungriestProcessMemoryUsageMB, 2)
+        processList = Process.getRunningProcesses()
+
+        self.runningProcesses = len(processList)
+        self.totalMemoryUsageMB = sum([process.memoryUsageMB for process in processList])
+
+        hungriestProcess = max(processList, key=lambda process: process.memoryUsageMB)
+
+        self.hungriestProcessName = hungriestProcess.name
+        self.hungriestProcessMemoryUsageMB = hungriestProcess.memoryUsageMB
+
+        # rounding
+        self.totalMemoryUsageMB = round(self.totalMemoryUsageMB, 2)
+        self.hungriestProcessMemoryUsageMB = round(self.hungriestProcessMemoryUsageMB, 2)
 
 def getCurrentMemoryState() -> MemoryState:
 
-    processes = Process.getRunningProcesses()
-    
-    totalMemoryUsageMB = sum([process.memoryUsageMB for process in processes])
-    hungriestProcess = max(processes, key=lambda process: process.memoryUsageMB)
-
-    return MemoryState(
-        
-        len(processes),
-        totalMemoryUsageMB,
-        hungriestProcess.name,
-        hungriestProcess.memoryUsageMB
-        )
+    return MemoryState()
