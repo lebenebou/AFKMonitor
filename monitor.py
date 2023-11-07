@@ -25,8 +25,8 @@ def batchExportToDailyCsv(states: list[ComputerState]):
     
     dailyCsvPath = getDailyCsvPath()
 
-    if not os.path.isdir(os.join(CURRENT_DIR, "Reports")):
-        os.mkdir(os.join(CURRENT_DIR, "Reports"))
+    if not os.path.isdir(os.path.join(CURRENT_DIR, "Reports")):
+        os.mkdir(os.path.join(CURRENT_DIR, "Reports"))
     
     if not os.path.exists(dailyCsvPath):
 
