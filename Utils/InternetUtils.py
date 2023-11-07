@@ -1,5 +1,14 @@
 
 import urllib.request
+import psutil
+
+class InternetState:
+
+    def __init__(self, isConnected: bool, bytesSent: float, bytesRecv: float):
+        
+        self.isConnected = isConnected
+        self.bytesSent = bytesSent
+        self.bytesRecv = bytesRecv
 
 def isConnected() -> bool:
 
@@ -14,3 +23,8 @@ def isConnected() -> bool:
             continue
 
     return False
+
+def getInternetState() -> InternetState:
+
+    ioCounters = psutil.net_io_counters()
+    return InternetState(isConnected(), ioCounters.bytes_sent, ioCounters.bytes_recv)
