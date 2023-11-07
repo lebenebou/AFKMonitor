@@ -3,7 +3,7 @@ import json
 import pandas
 
 from Utils.TimeUtils import getCurrentEpochTime, epochToLocal
-from Utils.InternetUtils import isConnected
+from Utils.InternetUtils import getInternetState
 from Utils.BatteryUtils import getBatteryPercentage, getChargingState
 from Utils.ProcessUtils import getCurrentMemoryState
 
@@ -15,7 +15,11 @@ class ComputerState:
 
         self.batteryPercent = getBatteryPercentage()
         self.pluggedIn = getChargingState()
-        self.connectedWiFi = isConnected()
+        
+        internetState = getInternetState()
+        self.isConnected = internetState.isConnected
+        self.bytesSent = internetState.bytesSent
+        self.bytesReceived = internetState.bytesRecv
 
         memoryState = getCurrentMemoryState()
         self.runningProcesses = memoryState.runningProcesses
@@ -31,7 +35,7 @@ class ComputerState:
         state = self.localTime() + "\t"
         state += f"Battery: {self.batteryPercent}%\t"
         state += f"Charging: {'YES' if self.pluggedIn else 'NO'}\t"
-        state += f"Connected: {'YES' if self.connectedWiFi else 'NO'}\t"
+        state += f"Connected: {'YES' if self.isConnected else 'NO'}\t"
         state += f"MemUsage: {self.TotalMemoryUsageMB:.2f} MB\t"
 
         return state
@@ -44,7 +48,10 @@ class ComputerState:
 
             "batteryPercent": self.batteryPercent,
             "charging": self.pluggedIn,
-            "connected": self.connectedWiFi,
+
+            "connected": self.isConnected,
+            "bytesSent": self.bytesSent,
+            "bytesReceived": self.bytesReceived,
 
             "runningProc": self.runningProcesses,
             "memUsageMB": self.TotalMemoryUsageMB,
