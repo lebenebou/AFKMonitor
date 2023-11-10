@@ -25,5 +25,5 @@ The computer state is recorded every 10 minutes. The computer will shutdown **wh
 
 To run a test, simply run `python <testName>.py`.
 
-## Machine learning
-We will also add Machine Learning
+## Machine Learning
+We will also add Machine Learning.
