@@ -24,3 +24,6 @@ The computer state is recorded every 10 minutes. The computer will shutdown **wh
 `./Tests` contains tests for both performance and functionality.
 
 To run a test, simply run `python <testName>.py`.
+
+## Machine learning
+adding ML
