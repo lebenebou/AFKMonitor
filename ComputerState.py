@@ -23,9 +23,9 @@ class ComputerState:
 
         memoryState = MemoryState()
         self.runningProcesses = memoryState.runningProcesses
-        self.TotalMemoryUsageMB = memoryState.totalMemoryUsageMB
-        self.HungriestProcessName = memoryState.hungriestProcessName
-        self.HungriestProcessMemoryUsageMB = memoryState.hungriestProcessMemoryUsageMB
+        self.totalMemoryUsageMB = memoryState.totalMemoryUsageMB
+        self.hungriestProcessName = memoryState.hungriestProcessName
+        self.hungriestProcessMemoryUsageMB = memoryState.hungriestProcessMemoryUsageMB
 
     def localTime(self) -> str:
         return epochToLocal(self.epochTime)
@@ -36,7 +36,7 @@ class ComputerState:
         state += f"Battery: {self.batteryPercent}%\t"
         state += f"Charging: {'YES' if self.pluggedIn else 'NO'}\t"
         state += f"Connected: {'YES' if self.isConnected else 'NO'}\t"
-        state += f"MemUsage: {self.TotalMemoryUsageMB:.2f} MB\t"
+        state += f"MemUsage: {self.totalMemoryUsageMB:.2f} MB\t"
 
         return state
 
@@ -54,9 +54,9 @@ class ComputerState:
             "bytesReceived": self.bytesReceived,
 
             "runningProc": self.runningProcesses,
-            "memUsageMB": self.TotalMemoryUsageMB,
-            "hungriestProc": self.HungriestProcessName,
-            "hungryProcMem": self.HungriestProcessMemoryUsageMB
+            "memUsageMB": self.totalMemoryUsageMB,
+            "hungriestProc": self.hungriestProcessName,
+            "hungryProcMem": self.hungriestProcessMemoryUsageMB
         }
 
     def toJson(self) -> str:
