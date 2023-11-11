@@ -4,6 +4,7 @@ CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
 REPORTS_DIR = os.path.join(CURRENT_DIR, "Reports")
 os.chdir(REPORTS_DIR)
 
+import sys
 import pandas
 
 def getDataFramePlusDate(csvFilePath: str) -> pandas.DataFrame:
@@ -25,13 +26,16 @@ def getCombinedReports() -> pandas.DataFrame:
 
 if __name__ == "__main__":
     
+    print("Combining reports...", flush=True)
     combinedDataFrame = getCombinedReports()
 
+    print("Saving to FullReport.csv...", flush=True)
     try:
         combinedDataFrame.to_csv("FullReport.csv", index=False, header=True)
 
     except PermissionError:
-        print("FullReport.csv is open, please close it and try again")
+        print("FullReport.csv is open, please close it and try again", flush=True, file=sys.stderr)
         exit(1)
         
+    print("Opening FullReport.csv...", flush=True)
     os.startfile("FullReport.csv")
