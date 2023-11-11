@@ -51,7 +51,3 @@ class MemoryState:
 
         self.hungriestProcessName = hungriestProcess.name
         self.hungriestProcessMemoryUsageMB = hungriestProcess.memoryUsageMB
-
-def getCurrentMemoryState() -> MemoryState:
-
-    return MemoryState()

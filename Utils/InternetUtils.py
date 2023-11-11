@@ -12,9 +12,9 @@ class InternetState:
 
 def isConnected() -> bool:
 
-    websites_to_check = ["https://www.google.com", "https://www.microsoft.com", "https://www.apple.com"]
+    websitesToCheck = ["https://www.google.com", "https://www.microsoft.com", "https://www.apple.com"]
 
-    for website in websites_to_check:
+    for website in websitesToCheck:
 
         try:
             urllib.request.urlopen(website, timeout=5)

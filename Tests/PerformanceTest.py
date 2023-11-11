@@ -10,7 +10,7 @@ from ComputerState import ComputerState
 
 from Utils.InternetUtils import isConnected
 from Utils.BatteryUtils import getBatteryPercentage
-from Utils.ProcessUtils import getCurrentMemoryState
+from Utils.ProcessUtils import MemoryState
 
 import time
 
@@ -43,7 +43,7 @@ def runPerformanceTest(func, testCount: int, msThreshold: int):
 if __name__=="__main__":
     
     runPerformanceTest(testCount=10, msThreshold=500, func=isConnected)
-    runPerformanceTest(testCount=10, msThreshold=500, func=getCurrentMemoryState)
+    runPerformanceTest(testCount=10, msThreshold=500, func=MemoryState)
     runPerformanceTest(testCount=10, msThreshold=50, func=getBatteryPercentage)
     
     runPerformanceTest(testCount=10, msThreshold=1000, func=ComputerState)

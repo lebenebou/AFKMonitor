@@ -5,7 +5,7 @@ import pandas
 from Utils.TimeUtils import getCurrentEpochTime, epochToLocal
 from Utils.InternetUtils import getInternetState
 from Utils.BatteryUtils import getBatteryPercentage, getChargingState
-from Utils.ProcessUtils import getCurrentMemoryState
+from Utils.ProcessUtils import MemoryState
 
 class ComputerState:
 
@@ -21,7 +21,7 @@ class ComputerState:
         self.bytesSent = internetState.bytesSent
         self.bytesReceived = internetState.bytesRecv
 
-        memoryState = getCurrentMemoryState()
+        memoryState = MemoryState()
         self.runningProcesses = memoryState.runningProcesses
         self.TotalMemoryUsageMB = memoryState.totalMemoryUsageMB
         self.HungriestProcessName = memoryState.hungriestProcessName
