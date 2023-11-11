@@ -5,38 +5,12 @@ os.chdir(CURRENT_DIR)
 
 import sys
 import argparse
-import pandas
 
 from ComputerState import ComputerState
 
 from Utils.CmdUtils import shutdown
-from Utils.TimeUtils import getCurrentDate, wait
-
-def getDailyCsvPath() -> str:
-
-    currentDate = getCurrentDate()
-    csvFileName = f"{currentDate}.csv"
-    return os.path.join(CURRENT_DIR, "Reports", csvFileName)
-
-def batchExportToDailyCsv(states: list[ComputerState]):
-
-    if len(states) == 0:
-        return
-    
-    dailyCsvPath = getDailyCsvPath()
-
-    if not os.path.isdir(os.path.join(CURRENT_DIR, "Reports")):
-        os.mkdir(os.path.join(CURRENT_DIR, "Reports"))
-    
-    if not os.path.exists(dailyCsvPath):
-
-        columnTitles = states[0].toDict().keys()
-        columnTitles = pandas.DataFrame(columns=columnTitles)
-        columnTitles.to_csv(dailyCsvPath, index=False, header=True)
-
-    dataFrames = [state.toDataFrame() for state in states]
-    combinedDataFrames = pandas.concat(dataFrames, ignore_index=True)
-    combinedDataFrames.to_csv(dailyCsvPath, mode="a", index=False, header=False)
+from Utils.TimeUtils import wait
+from Utils.ExportUtils import batchExportToDailyCsv
 
 def handleKeyboardInterrupt(stateBuffer: list[ComputerState]):
 
