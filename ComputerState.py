@@ -2,7 +2,7 @@
 import json
 import pandas
 
-from Utils.TimeUtils import getCurrentEpochTime, epochToLocal
+from Utils.TimeUtils import getCurrentEpochTime, epochToLocalTime
 from Utils.InternetUtils import getInternetState
 from Utils.BatteryUtils import getBatteryPercentage, getChargingState
 from Utils.ProcessUtils import MemoryState
@@ -28,7 +28,7 @@ class ComputerState:
         self.hungriestProcessMemoryUsageMB = memoryState.hungriestProcessMemoryUsageMB
 
     def localTime(self) -> str:
-        return epochToLocal(self.epochTime)
+        return epochToLocalTime(self.epochTime)
 
     def __str__(self) -> str:
 

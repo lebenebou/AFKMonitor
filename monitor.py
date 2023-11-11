@@ -10,7 +10,7 @@ from ComputerState import ComputerState
 
 from Utils.CmdUtils import shutdown
 from Utils.TimeUtils import wait
-from Utils.ExportUtils import batchExportToDailyCsv
+from Utils.ExportUtils import exportStates
 
 def handleKeyboardInterrupt(stateBuffer: list[ComputerState]):
 
@@ -24,10 +24,10 @@ def handleKeyboardInterrupt(stateBuffer: list[ComputerState]):
         exit(0)
 
     try:
-        batchExportToDailyCsv(stateBuffer)
+        exportStates(stateBuffer)
 
     except PermissionError:
-        print("Unable to save, daily CSV is open.\n")
+        print("Unable to save, please close all open CSVs.\n")
         return
         
     exit(0)
@@ -86,12 +86,12 @@ if __name__=="__main__":
         if len(stateBuffer) >= maxStateBufferSize:
             
             try:
-                batchExportToDailyCsv(stateBuffer)
+                exportStates(stateBuffer)
                 print("(Saved to CSV)", end="")
                 stateBuffer.clear()
 
             except PermissionError:
-                print("(Unable to save, daily CSV is open)", end="")
+                print("(Unable to save, CSVs are open)", end="")
 
         print(end="\n", flush=True)
 

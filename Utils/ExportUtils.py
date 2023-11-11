@@ -1,37 +1,51 @@
 
 import os
 UTILS_DIR = os.path.dirname(os.path.abspath(__file__))
-MAIN_DIR = os.path.dirname(UTILS_DIR)
-os.chdir(MAIN_DIR)
+MAIN_REPO_DIR = os.path.dirname(UTILS_DIR)
+os.chdir(MAIN_REPO_DIR)
 
 import pandas
-
 from ComputerState import ComputerState
+from Utils.TimeUtils import getCurrentDate, epochToLocalDateAndTime
 
-from Utils.TimeUtils import getCurrentDate
+def statesToDataFrame(states: list[ComputerState]) -> pandas.DataFrame:
 
-def getDailyCsvPath() -> str:
+    dataFrames = [singleState.toDataFrame() for singleState in states]
+    return pandas.concat(dataFrames, ignore_index=True)
 
-    currentDate = getCurrentDate()
-    csvFileName = f"{currentDate}.csv"
-    return os.path.join(MAIN_DIR, "Reports", csvFileName)
+def isCsvOpen(csvFilePath: str) -> bool:
 
-def batchExportToDailyCsv(states: list[ComputerState]):
+    try:
+        os.access(csvFilePath, os.W_OK)
+        return False
+    
+    except PermissionError:
+        return True
+
+def exportToCsv(statesDataFrame: pandas.DataFrame, csvFilePath:str, includeDay: bool):
+    
+    if includeDay:
+
+        statesDataFrame["localTime"] = statesDataFrame["time"].apply(epochToLocalDateAndTime)
+
+    if not os.path.exists(csvFilePath):
+        
+        columnTitles = pandas.DataFrame(columns = statesDataFrame.columns)
+        columnTitles.to_csv(csvFilePath, index=False, header=True)
+        
+    statesDataFrame.to_csv(csvFilePath, index=False, mode="a", header=False)
+
+def exportStates(states: list[ComputerState]):
 
     if len(states) == 0:
         return
     
-    dailyCsvPath = getDailyCsvPath()
+    dailyCsvFilePath = os.path.join(MAIN_REPO_DIR, "Reports", f"{getCurrentDate()}.csv")
+    fullReportCsvFilePath = os.path.join(MAIN_REPO_DIR, "Reports", "FullReport.csv")
 
-    if not os.path.isdir(os.path.join(MAIN_DIR, "Reports")):
-        os.mkdir(os.path.join(MAIN_DIR, "Reports"))
-    
-    if not os.path.exists(dailyCsvPath):
+    if isCsvOpen(dailyCsvFilePath) or isCsvOpen(fullReportCsvFilePath):
+        raise PermissionError("One of the CSV files is open, unable to save")
 
-        columnTitles = states[0].toDict().keys()
-        columnTitles = pandas.DataFrame(columns=columnTitles)
-        columnTitles.to_csv(dailyCsvPath, index=False, header=True)
-
-    dataFrames = [state.toDataFrame() for state in states]
-    combinedDataFrames = pandas.concat(dataFrames, ignore_index=True)
-    combinedDataFrames.to_csv(dailyCsvPath, mode="a", index=False, header=False)
+    fullDataFrame = statesToDataFrame(states)
+    exportToCsv(fullDataFrame, dailyCsvFilePath, includeDay=False)
+    exportToCsv(fullDataFrame, fullReportCsvFilePath, includeDay=True)
