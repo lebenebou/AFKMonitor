@@ -27,3 +27,6 @@ To run a test, simply run `python <testName>.py`.
 
 ## Machine Learning
 We will also add Machine Learning.
+
+## Data Science
+We will also add Visualisation.
