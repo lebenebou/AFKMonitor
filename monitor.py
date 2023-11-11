@@ -9,7 +9,7 @@ import pandas
 
 from ComputerState import ComputerState
 
-from Utils.AutomationUtils import shutdown
+from Utils.CmdUtils import shutdown
 from Utils.TimeUtils import getCurrentDate, wait
 
 def getDailyCsvPath() -> str:
