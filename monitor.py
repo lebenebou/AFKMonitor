@@ -64,7 +64,7 @@ if __name__=="__main__":
 
     if currentState.batteryPercent <= batteryThreshold:
 
-        print(f"Battery threshold cannot be higherthan current battery percentage ({currentState.batteryPercent}%).", file=sys.stderr)
+        print(f"Battery threshold cannot be higher than current battery percentage ({currentState.batteryPercent}%).", file=sys.stderr)
         exit(1)
 
     os.system("cls")
