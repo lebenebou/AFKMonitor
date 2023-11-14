@@ -23,9 +23,6 @@ def isCsvOpen(csvFilePath: str) -> bool:
         return True
 
 def exportToCsv(statesDataFrame: pandas.DataFrame, csvFilePath:str, includeDay: bool):
-
-    if not os.path.isdir(os.path.join(MAIN_REPO_DIR, "Reports")):
-        os.mkdir(os.path.join(MAIN_REPO_DIR, "Reports"))
     
     if includeDay:
 
@@ -43,8 +40,13 @@ def exportStates(states: list[ComputerState]):
     if len(states) == 0:
         return
     
-    dailyCsvFilePath = os.path.join(MAIN_REPO_DIR, "Reports", f"{getCurrentDate()}.csv")
-    fullReportCsvFilePath = os.path.join(MAIN_REPO_DIR, "Reports", "FullReport.csv")
+    reportsDir = os.path.join(MAIN_REPO_DIR, "Reports")
+
+    if not os.path.isdir(reportsDir):
+        os.mkdir(reportsDir)
+    
+    dailyCsvFilePath = os.path.join(reportsDir, f"{getCurrentDate()}.csv")
+    fullReportCsvFilePath = os.path.join(reportsDir, "FullReport.csv")
 
     if isCsvOpen(dailyCsvFilePath) or isCsvOpen(fullReportCsvFilePath):
         raise PermissionError("One of the CSV files is open, unable to save")
