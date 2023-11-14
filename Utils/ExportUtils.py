@@ -23,6 +23,9 @@ def isCsvOpen(csvFilePath: str) -> bool:
         return True
 
 def exportToCsv(statesDataFrame: pandas.DataFrame, csvFilePath:str, includeDay: bool):
+
+    if not os.path.isdir(os.path.join(MAIN_REPO_DIR, "Reports")):
+        os.mkdir(os.path.join(MAIN_REPO_DIR, "Reports"))
     
     if includeDay:
 
