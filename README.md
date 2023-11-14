@@ -30,3 +30,46 @@ We will also add Machine Learning.
 
 ## Data Science
 We will also add Visualisation.
+
+### Visualizations
+#### 1. Battery Percentage Over Time
+   - Line plot displaying the variation in battery percentage throughout the selected date.
+
+#### 2. Memory Usage of Processes
+   - Bar chart showing the memory usage of the top processes on the selected date.
+
+#### 3. Network Activity
+   - Line plot depicting bytes sent and received over time on the selected date.
+
+#### 4. Running Processes
+   - Line plot illustrating the number of running processes over time.
+
+### Analysis
+The script provides various analyses on the selected date:
+- Battery Analysis:
+  - Average, minimum, and maximum battery percentages.
+
+- Memory Usage Analysis:
+  - Total memory usage and top processes by memory usage.
+
+- Network Activity Analysis:
+  - Total bytes sent and received.
+
+- Running Processes Analysis:
+  - Average number of running processes.
+
+- Charging and Connected Analysis:
+  - Percentage of time the device was charging.
+  - Percentage of time the device was connected.
+
+- Process Analysis:
+  - Most frequently running processes.
+
+- Hungry Process Analysis:
+  - Process with the highest memory usage.
+
+- Memory Usage Trends:
+  - Trends in memory usage resampled on an hourly basis.
+
+### Error Handling
+- If the user provides an invalid date format or if no data is available for the selected date, the script displays an error message and exits.
