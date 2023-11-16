@@ -12,6 +12,19 @@ from Utils.CmdUtils import shutdown
 from Utils.TimeUtils import wait
 from Utils.ExportUtils import exportStates
 
+def safeExit(stateBuffer: list[ComputerState]):
+
+    if len(stateBuffer) == 0:
+        exit(0)
+
+    try:
+        exportStates(stateBuffer)
+    except PermissionError:
+        print("Unable to exit, please close open CSV files.", file=sys.stderr)
+        return
+
+    exit(0)
+
 def handleKeyboardInterrupt(stateBuffer: list[ComputerState]):
 
     if len(stateBuffer) == 0:
@@ -22,15 +35,8 @@ def handleKeyboardInterrupt(stateBuffer: list[ComputerState]):
     
     if input(message).strip().lower() != "y":
         exit(0)
-
-    try:
-        exportStates(stateBuffer)
-
-    except PermissionError:
-        print("Unable to save, please close all open CSVs.\n")
-        return
-        
-    exit(0)
+    
+    safeExit()
 
 if __name__=="__main__":
 
