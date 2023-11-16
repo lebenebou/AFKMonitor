@@ -19,7 +19,7 @@ def isConnected() -> bool:
         try:
             urllib.request.urlopen(website, timeout=5)
             return True
-        except (urllib.error.URLError, ConnectionError):
+        except:
             continue
 
     return False
