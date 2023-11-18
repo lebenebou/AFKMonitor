@@ -25,21 +25,8 @@ The computer state is recorded every 10 minutes. The computer will shutdown **wh
 
 To run a test, simply run `python <testName>.py`.
 
+## Visualization.ipynb
+Battery Percentage Over Time, Memory Usage of Processes, Network Activity, Running Processes.
+
 ## Machine Learning
-We will also add Machine Learning.
-
-## Data Science
-We will also add Visualisation.
-
-### Visualizations
-#### 1. Battery Percentage Over Time
-   - Line plot displaying the variation in battery percentage throughout the selected date.
-
-#### 2. Memory Usage of Processes
-   - Bar chart showing the memory usage of the top processes on the selected date.
-
-#### 3. Network Activity
-   - Line plot depicting bytes sent and received over time on the selected date.
-
-#### 4. Running Processes
-   - Line plot illustrating the number of running processes over time.
+We will also be using machine learning for some predictions
