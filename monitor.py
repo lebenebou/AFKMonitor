@@ -36,7 +36,7 @@ def handleKeyboardInterrupt(stateBuffer: list[ComputerState]):
     if input(message).strip().lower() != "y":
         exit(0)
     
-    safeExit()
+    safeExit(stateBuffer)
 
 if __name__=="__main__":
 
