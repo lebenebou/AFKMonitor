@@ -1,5 +1,5 @@
 # AFKMonitor
-A script that monitors a PC overnight. Generates a daily CSV report of computer states at chosen intervals.
+A script that monitors a PC while being used or overnight. Generates a daily CSV report of computer states at chosen intervals.
 
 ## Usage
 `python monitor.py <minuteInterval> <batteryThreshold> [bufferSize]`
