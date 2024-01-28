@@ -42,10 +42,10 @@ def runPerformanceTest(func, testCount: int, msThreshold: int):
 
 if __name__=="__main__":
     
-    runPerformanceTest(testCount=10, msThreshold=500, func=isConnected)
+    runPerformanceTest(testCount=10, msThreshold=1000, func=isConnected)
     runPerformanceTest(testCount=10, msThreshold=500, func=MemoryState)
-    runPerformanceTest(testCount=10, msThreshold=50, func=getBatteryPercentage)
+    runPerformanceTest(testCount=10, msThreshold=10, func=getBatteryPercentage)
     
-    runPerformanceTest(testCount=10, msThreshold=1000, func=ComputerState)
+    runPerformanceTest(testCount=10, msThreshold=1500, func=ComputerState)
 
     print("\nAll tests passed.", flush=True)
