@@ -5,13 +5,14 @@ from ComputerState import ComputerState
 
 class Condition:
 
-    def __init__(self, function: callable, errorMessage: str):
+    def __init__(self, predicate: callable, errorMessage: str, isCritical = True):
 
-        self.validatorFunction = function
+        self.predicate = predicate
         self.errorMessage = errorMessage.strip().capitalize().strip(".") + "."
+        self.isCritical = isCritical
         
-    def check(self, value: int) -> bool:
-        return self.validatorFunction(value)
+    def isMet(self, value: int) -> bool:
+        return self.predicate(value)
 
 class InputValue:
 
@@ -20,18 +21,8 @@ class InputValue:
         self.name = name.strip()
         self.conditions: list[Condition] = []
 
-    def addCondition(self, function: callable, errorMessage: str):
-        self.conditions.append(Condition(function, errorMessage))
-
-    def __validate(self, value: int) -> bool:
-
-        for condition in self.conditions:
-
-            if not condition.check(value):
-                print(condition.errorMessage, file=sys.stderr)
-                return False
-
-        return True
+    def addCondition(self, predicate: callable, errorMessage: str, isCritical = True):
+        self.conditions.append(Condition(predicate, errorMessage, isCritical))
 
     def getValueFromUser(self) -> int:
 
@@ -49,28 +40,51 @@ class InputValue:
                 print("Value must be an integer.")
                 continue
 
+    # private
+    def __validate(self, value: int) -> bool:
+
+        for condition in self.conditions:
+
+            if not condition.isMet(value):
+
+                print(condition.errorMessage, file=sys.stderr)
+
+                if not condition.isCritical and self.__userWantsToContinueAnyway():
+                    continue
+
+                return False
+
+        return True
+
+    # private
+    def __userWantsToContinueAnyway(self) -> bool:
+
+        response = input("Continue anyway? (y/n): ").strip().lower()
+        return response == "y"
+
 class AFKMonitorInputs:
 
     def __init__(self):
 
-        self.getInputsFromUser()
+        self.__getInputsFromUser()
 
-    def getInputsFromUser(self):
+    # private
+    def __getInputsFromUser(self):
         
         currentState = ComputerState()
 
         intervalInput = InputValue("monitoring interval (min)")
-        intervalInput.addCondition(lambda x: x > 0 and x <= 60, "monitoring interval must be between 1 and 60 minutes")
-        intervalInput.addCondition(lambda x: currentState.pluggedIn or x > currentState.batteryPercent, "PC might shutdown before anything is monitored")
+        intervalInput.addCondition(lambda m: m > 0 and m <= 60, "monitoring interval must be between 1 and 60 minutes")
+        intervalInput.addCondition(lambda m: currentState.pluggedIn or m > currentState.batteryPercent, "PC might shutdown before anything is monitored", isCritical=False)
         self.monitoringInterval = intervalInput.getValueFromUser()
 
         monitoringDurationInput = InputValue("monitoring duration (hours)")
-        monitoringDurationInput.addCondition(lambda x: x > 0, "monitoring duration must be greater than 0")
-        monitoringDurationInput.addCondition(lambda x: self.monitoringInterval != 60 or x!=1, "no need to monitor for 1 hour if monitoring interval is 60 minutes")
+        monitoringDurationInput.addCondition(lambda h: h > 0, "monitoring duration must be greater than 0")
+        monitoringDurationInput.addCondition(lambda h: self.monitoringInterval != 60 or h != 1, "no need to monitor for 1 hour if monitoring interval is 60 minutes")
         self.monitoringDuration = monitoringDurationInput.getValueFromUser()
 
         batteryLimitInput = InputValue("battery limit (%)")
-        batteryLimitInput.addCondition(lambda x: x >= 0 and x < currentState.batteryPercent, f"battery limit must be between 0 and current battery")
+        batteryLimitInput.addCondition(lambda p: p >= 0 and p < currentState.batteryPercent, f"battery limit must be between 0 and current battery")
         self.batteryLimit = batteryLimitInput.getValueFromUser()
 
 
