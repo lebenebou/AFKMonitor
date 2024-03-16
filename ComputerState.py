@@ -11,6 +11,10 @@ class ComputerState:
 
     def __init__(self):
 
+        self.update()
+
+    def update(self):
+
         self.epochTime = getCurrentEpochTime()
 
         self.batteryPercent = getBatteryPercentage()
@@ -26,6 +30,7 @@ class ComputerState:
         self.totalMemoryUsageMB = memoryState.totalMemoryUsageMB
         self.hungriestProcessName = memoryState.hungriestProcessName
         self.hungriestProcessMemoryUsageMB = memoryState.hungriestProcessMemoryUsageMB
+
 
     def localTime(self) -> str:
         return epochToLocalTime(self.epochTime)

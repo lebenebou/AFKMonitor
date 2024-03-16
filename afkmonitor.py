@@ -84,7 +84,7 @@ if __name__=="__main__":
     
     while True:
 
-        currentState = ComputerState()
+        currentState.update()
         print(currentState, end="\t")
 
         stateBuffer.append(currentState)
