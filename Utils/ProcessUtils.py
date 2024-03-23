@@ -3,51 +3,62 @@ from Utils.CmdUtils import runCommand
 
 class Process:
 
-    def __init__(self, name: str, memoryUsageMB: float):
+    def __init__(self, name: str, memoryUsageKB: float):
 
         self.name = name
-        self.memoryUsageMB = memoryUsageMB
+        self.memoryUsageKB = memoryUsageKB
 
-    @staticmethod
-    def extractProcessFromLine(line: str):
+    def getMemoryUsageMB(self) -> float:
+        return self.memoryUsageKB / 1000
 
-        line = line.strip().replace(",", "").replace("N/A", "0")
-        values = line.split("\"\"")
-        values = [value.strip("\"") for value in values]
-        values[4] = values[4].strip(" K")
+def extractProcessFromLine(stdoutLine: str) -> Process:
 
-        name = values[0]
-        memoryUsageMB = float(values[4]) / 1000
+    stdoutLine = stdoutLine.replace('"', '')
 
-        return Process(name, memoryUsageMB)
+    fields = stdoutLine.split(",")
 
-    @staticmethod
-    def getRunningProcesses() -> list:
+    name = fields[0]
+    memUsageKbString = fields[-1].strip(" K").strip()
+    
+    if len(fields) > 5:
+        memUsageKbString = fields[-2] + memUsageKbString
 
-        commandOutput = runCommand("tasklist /fo csv /nh").stdout
-        lines = commandOutput.splitlines()
+    memUsageKb = float(memUsageKbString)
+    return Process(name, memUsageKb)
 
-        processes = [Process.extractProcessFromLine(line) for line in lines]
-        memUsage = dict()
+def getRunningProcesses() -> list[Process]:
 
-        for process in processes:
-            
-            memUsage.setdefault(process.name, 0)
-            memUsage[process.name] += process.memoryUsageMB
+    commandOutput = runCommand("tasklist /fo csv /nh").stdout
 
-        processes = [Process(name, memUsage[name]) for name in memUsage]
-        return processes
+    processes = [extractProcessFromLine(line) for line in commandOutput.splitlines()]
+
+    memUsage = dict()
+    for process in processes:
+        
+        memUsage.setdefault(process.name, 0)
+        memUsage[process.name] += process.memoryUsageKB
+
+    processes = [Process(name, memUsage[name]) for name in memUsage]
+    return processes
 
 class MemoryState:
 
     def __init__(self):
         
-        processList = Process.getRunningProcesses()
+        processList = getRunningProcesses()
 
         self.runningProcesses = len(processList)
-        self.totalMemoryUsageMB = sum([process.memoryUsageMB for process in processList])
+        self.totalMemoryUsageMB = sum([process.getMemoryUsageMB() for process in processList])
 
-        hungriestProcess = max(processList, key=lambda process: process.memoryUsageMB)
+        hungriestProcess = max(processList, key=lambda process: process.memoryUsageKB)
 
         self.hungriestProcessName = hungriestProcess.name
-        self.hungriestProcessMemoryUsageMB = hungriestProcess.memoryUsageMB
+        self.hungriestProcessMemoryUsageMB = hungriestProcess.getMemoryUsageMB()
+
+if __name__ == "__main__":
+
+    currentMemoryState = MemoryState()
+
+    print(f"Total running processes: {currentMemoryState.runningProcesses}")
+    print(f"Total memory usage: {currentMemoryState.totalMemoryUsageMB} MB")
+    print(f"Hungriest process: {currentMemoryState.hungriestProcessName} ({currentMemoryState.hungriestProcessMemoryUsageMB} MB)")
