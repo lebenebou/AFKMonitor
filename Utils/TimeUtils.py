@@ -12,7 +12,7 @@ def epochToLocalDateAndTime(epochTime: int) -> str:
     return time.strftime("%b %d %Y %I:%M %p", time.localtime(epochTime))
 
 def getCurrentDate() -> str:
-    return datetime.datetime.now().strftime("%b_%d_%Y")
+    return datetime.datetime.now().strftime("%Y_%m_%d")
 
 def wait(minutes: int):
     time.sleep(60 * minutes)

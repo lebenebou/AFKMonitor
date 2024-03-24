@@ -25,7 +25,6 @@ def isCsvOpen(csvFilePath: str) -> bool:
 def exportToCsv(statesDataFrame: pandas.DataFrame, csvFilePath:str, includeDay: bool):
     
     if includeDay:
-
         statesDataFrame["localTime"] = statesDataFrame["time"].apply(epochToLocalDateAndTime)
 
     if not os.path.exists(csvFilePath):
