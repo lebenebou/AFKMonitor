@@ -5,7 +5,7 @@ import pandas
 from Utils.TimeUtils import getCurrentEpochTime, epochToLocalTime
 from Utils.InternetUtils import InternetState
 from Utils.BatteryUtils import getBatteryPercentage, getChargingState
-from Utils.ProcessUtils import MemoryState
+from Utils.MemoryUtils import MemoryState
 
 class ComputerState:
 

@@ -24,9 +24,3 @@ The computer state is recorded every 10 minutes. The computer will shutdown **wh
 `./Tests` contains tests for both performance and functionality.
 
 To run a test, simply run `python <testName>.py`.
-
-## Visualization.ipynb
-Battery Percentage Over Time, Memory Usage of Processes, Network Activity, Running Processes.
-
-## Machine Learning
-We will also be using machine learning for some predictions

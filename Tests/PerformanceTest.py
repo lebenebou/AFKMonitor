@@ -10,7 +10,7 @@ from ComputerState import ComputerState
 
 from Utils.InternetUtils import InternetState
 from Utils.BatteryUtils import getBatteryPercentage
-from Utils.ProcessUtils import MemoryState
+from Utils.MemoryUtils import MemoryState
 
 import time
 
