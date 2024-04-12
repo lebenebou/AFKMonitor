@@ -7,21 +7,22 @@ import sys
 import argparse
 
 from ComputerState import ComputerState
+from Utils.CmdUtils import runPythonScriptInNewWindow
 
-from Utils.CmdUtils import shutdown
 from Utils.TimeUtils import wait
 from Utils.ExportUtils import exportStates
 
-def safeExit(stateBuffer: list[ComputerState]):
-
-    if len(stateBuffer) == 0:
-        exit(0)
+def safeExit(stateBuffer: list[ComputerState], scriptPath: str = None):
 
     try:
         exportStates(stateBuffer)
     except PermissionError:
         print("Unable to exit, please close open CSV files.", file=sys.stderr)
         return
+
+    if scriptPath is not None:
+        print(f"Running {scriptPath}", end="\n", flush=True)
+        runPythonScriptInNewWindow(scriptPath)
 
     exit(0)
 
@@ -38,48 +39,18 @@ def handleKeyboardInterrupt(stateBuffer: list[ComputerState]):
     
     safeExit(stateBuffer)
 
-if __name__=="__main__":
+def startMonitoring(batteryThreshold: int, scriptPath: str, minuteInterval: int = 5, maxStateBufferSize: int = 5):
 
     os.system("cls")
-    parser = argparse.ArgumentParser()
-    parser.add_argument("minuteInterval", type=int, help="Check computer state every interval")
-    parser.add_argument("batteryThreshold", type=int, help="Battery percentage threshold (negative to shutdown when unplugged)")
-    parser.add_argument("maxBufferSize", type=int, nargs="?", default=5, help="[optional] Maximum size of state buffer before exporting to CSV")
+    print(f"Monitoring every {minuteInterval} minutes until ", file=sys.stdout, end="")
+    if batteryThreshold < 0:
+        print(f"unplugged...", file=sys.stdout, flush=True)
+    else:
+        print(f"battery reaches {batteryThreshold}%...", file=sys.stdout, flush=True)
 
-    args = parser.parse_args()
-    minuteInterval = args.minuteInterval
-    batteryThreshold = args.batteryThreshold
-    maxStateBufferSize = args.maxBufferSize
-    
-    if minuteInterval < 1 or minuteInterval > 60:
-
-        print("Monitor interval must be at least 1 minute, and at most 60", file=sys.stderr)
-        exit(1)
-
-    if maxStateBufferSize < 0 or maxStateBufferSize > 50:
-
-        print("maxBufferSize is invalid, must be between 0 and 50", file=sys.stderr)
-        exit(1)
+    print(end="\n", file=sys.stdout, flush=True)
 
     currentState = ComputerState()
-    
-    if batteryThreshold < 0 and not currentState.pluggedIn:
-        
-        print("Battery threshold is negative and computer is already unplugged.", file=sys.stderr)
-        exit(1)
-
-    if currentState.batteryPercent <= batteryThreshold:
-
-        print(f"Battery threshold cannot be higher than current battery percentage ({currentState.batteryPercent}%).", file=sys.stderr)
-        exit(1)
-
-    os.system("cls")
-    # START MONITORING
-    if batteryThreshold < 0:
-        print(f"Monitoring every {minuteInterval} minutes until unplugged...\n")
-    else:
-        print(f"Monitoring every {minuteInterval} minutes with a battery threshold of {batteryThreshold}%...\n")
-
     stateBuffer: list[ComputerState] = []
     
     while True:
@@ -97,23 +68,51 @@ if __name__=="__main__":
                 stateBuffer.clear()
 
             except PermissionError:
-                print("(Unable to save, CSVs are open)", end="")
+                print("(Unable to save, CSV is open)", end="")
 
         print(end="\n", flush=True)
 
         if batteryThreshold < 0 and not currentState.pluggedIn:
-            
-            print("Computer was unplugged. Shutting down...")
-            shutdown()
-            exit(0)
+            print("Computer unplugged. Stopping...")
+            safeExit(stateBuffer, scriptPath)
 
         if currentState.batteryPercent <= batteryThreshold:
-
-            print("Battery threshold reached. Shutting down...")
-            shutdown()
-            exit(0)
+            print("Battery threshold reached. Stopping...")
+            safeExit(stateBuffer, scriptPath)
 
         try:
             wait(minuteInterval)
         except KeyboardInterrupt:
             handleKeyboardInterrupt(stateBuffer)
+
+if __name__=="__main__":
+
+    os.system("cls")
+    parser = argparse.ArgumentParser()
+    parser.add_argument("batteryThreshold", type=int, help="Battery percentage threshold (-1 to shutdown when unplugged)")
+    parser.add_argument("--scriptPath", type=str, help="path to python script to run when monitoring ends")
+
+    args = parser.parse_args()
+    batteryThreshold = args.batteryThreshold
+    scriptPath = args.scriptPath
+
+    currentState = ComputerState()
+    
+    if batteryThreshold < 0 and not currentState.pluggedIn:
+        print("Battery threshold is negative and computer is already unplugged.", file=sys.stderr, flush=True)
+        exit(1)
+
+    if currentState.batteryPercent <= batteryThreshold:
+        print(f"Battery threshold cannot be higher than current battery percentage: {currentState.batteryPercent}%", file=sys.stderr, flush=True)
+        exit(1)
+
+    if args.scriptPath is not None and not args.scriptPath.endswith(".py"):
+        print("Script must be a python file", file=sys.stderr, flush=True)
+        exit(1)
+
+    if args.scriptPath is not None and not os.path.isfile(args.scriptPath):
+        print(f"Path does not exist: {args.scriptPath}", file=sys.stderr, flush=True)
+        exit(1)
+
+    del currentState
+    startMonitoring(batteryThreshold, args.scriptPath)

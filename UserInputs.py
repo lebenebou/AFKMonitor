@@ -2,6 +2,7 @@
 import sys
 import os
 from ComputerState import ComputerState
+from tkinter import filedialog
 
 class Condition:
 
@@ -11,8 +12,15 @@ class Condition:
         self.errorMessage = errorMessage.strip().capitalize().strip(".") + "."
         self.isCritical = isCritical
         
-    def isMet(self, value: int) -> bool:
-        return self.predicate(value)
+    def isMet(self, value) -> bool:
+
+        try:
+            return self.predicate(value)
+        except:
+            try:
+                return self.predicate(int(value))
+            except:
+                return False
 
 class InputValue:
 
@@ -24,24 +32,30 @@ class InputValue:
     def addCondition(self, predicate: callable, errorMessage: str, isCritical = True):
         self.conditions.append(Condition(predicate, errorMessage, isCritical))
 
-    def getValueFromUser(self) -> int:
+    def getValueFromUser(self) -> str:
 
         while True:
 
-            try:
-                value = int(input(f"Enter {self.name}: "))
+            value = input(f"Enter {self.name}: ")
 
-                if not self.__validate(value):
-                    continue # error message is printed
-                
-                return value
-                
-            except ValueError:
-                print("Value must be an integer.")
-                continue
+            if not self.__validate(value):
+                continue # error message is printed
+            
+            return value
+
+    def getFilePathFromUser(self) -> str:
+
+        while True:
+
+            value = filedialog.askopenfilename(filetypes=[("Python files", "*.py")])
+
+            if not self.__validate(value):
+                continue # error message is printed
+            
+            return value
 
     # private
-    def __validate(self, value: int) -> bool:
+    def __validate(self, value) -> bool:
 
         for condition in self.conditions:
 
@@ -73,26 +87,26 @@ class AFKMonitorInputs:
         
         currentState = ComputerState()
 
-        intervalInput = InputValue("monitoring interval (min)")
-        intervalInput.addCondition(lambda m: m > 0 and m <= 60, "monitoring interval must be between 1 and 60 minutes")
-        intervalInput.addCondition(lambda m: currentState.pluggedIn or m > currentState.batteryPercent, "PC might shutdown before anything is monitored", isCritical=False)
-        self.monitoringInterval = intervalInput.getValueFromUser()
-
-        monitoringDurationInput = InputValue("monitoring duration (hours)")
-        monitoringDurationInput.addCondition(lambda h: h > 0, "monitoring duration must be greater than 0")
-        monitoringDurationInput.addCondition(lambda h: self.monitoringInterval != 60 or h != 1, "no need to monitor for 1 hour if monitoring interval is 60 minutes")
-        self.monitoringDuration = monitoringDurationInput.getValueFromUser()
-
         batteryLimitInput = InputValue("battery limit (%)")
-        batteryLimitInput.addCondition(lambda p: p >= 0 and p < currentState.batteryPercent, f"battery limit must be between 0 and current battery")
-        self.batteryLimit = batteryLimitInput.getValueFromUser()
+        batteryLimitInput.addCondition(lambda p: p == -1 or (p >= 0 and p < currentState.batteryPercent), "battery limit must be between 0 and current battery, or -1 to stop when unlpugged")
+        batteryLimitInput.addCondition(lambda p: p != -1 or currentState.pluggedIn, "PC is already unplugged")
+        self.batteryLimit = int(batteryLimitInput.getValueFromUser())
+
+        self.scriptToRun = None
+
+        if input("Would you like to run a python script when monitoring ends? (y/n): ").strip().lower() != "y":
+            return
+
+        scriptToRun = InputValue("python file path to run when monitoring ends")
+        scriptToRun.addCondition(lambda f: f is not None, "no file chosen")
+        scriptToRun.addCondition(lambda f: os.path.exists(f) and f.endswith(".py"), "file must be a python file that exists")
+        self.scriptToRun = scriptToRun.getFilePathFromUser()
 
 
 if __name__ == "__main__":
 
     inputs = AFKMonitorInputs()
-
     os.system("cls")
-    print(f"Monitoring interval: {inputs.monitoringInterval} minutes.")
-    print(f"Monitoring duration: {inputs.monitoringDuration} hours.")
+
     print(f"Battery limit: {inputs.batteryLimit}%.")
+    print(f"File to run: {inputs.scriptToRun}")
