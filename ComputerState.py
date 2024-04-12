@@ -3,7 +3,7 @@ import json
 import pandas
 
 from Utils.TimeUtils import getCurrentEpochTime, epochToLocalTime
-from Utils.InternetUtils import getInternetState
+from Utils.InternetUtils import InternetState
 from Utils.BatteryUtils import getBatteryPercentage, getChargingState
 from Utils.ProcessUtils import MemoryState
 
@@ -20,7 +20,7 @@ class ComputerState:
         self.batteryPercent = getBatteryPercentage()
         self.pluggedIn = getChargingState()
         
-        internetState = getInternetState()
+        internetState = InternetState()
         self.isConnected = internetState.isConnected
         self.bytesSent = internetState.bytesSent
         self.bytesReceived = internetState.bytesRecv
@@ -29,7 +29,7 @@ class ComputerState:
         self.runningProcesses = memoryState.runningProcesses
         self.totalMemoryUsageMB = memoryState.totalMemoryUsageMB
         self.hungriestProcessName = memoryState.hungriestProcessName
-        self.hungriestProcessMemoryUsageMB = memoryState.hungriestProcessMemoryUsageMB
+        self.hungriestProcessMemoryUsageMB = memoryState.hungriestProcessMemUsageMB
 
 
     def localTime(self) -> str:

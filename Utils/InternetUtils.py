@@ -1,30 +1,26 @@
 
-import urllib.request
+import os
+CURRENT_DIR = os.path.dirname(os.path.abspath(__file__))
+os.chdir(CURRENT_DIR)
+
+import sys
+sys.path.append("..")
+
+from Utils.CmdUtils import runCommand
 import psutil
 
 class InternetState:
 
-    def __init__(self, isConnected: bool, bytesSent: float, bytesRecv: float):
+    def __init__(self):
         
-        self.isConnected = isConnected
-        self.bytesSent = bytesSent
-        self.bytesRecv = bytesRecv
+        self.isConnected = isConnected()
+
+        ioCounters = psutil.net_io_counters()
+        self.bytesSent = ioCounters.bytes_sent
+        self.bytesRecv = ioCounters.bytes_recv
 
 def isConnected() -> bool:
+    return runCommand("ping -n 1 www.google.com").returncode == 0
 
-    websitesToCheck = ["https://www.google.com", "https://www.microsoft.com", "https://www.apple.com"]
-
-    for website in websitesToCheck:
-
-        try:
-            urllib.request.urlopen(website, timeout=5)
-            return True
-        except:
-            continue
-
-    return False
-
-def getInternetState() -> InternetState:
-
-    ioCounters = psutil.net_io_counters()
-    return InternetState(isConnected(), ioCounters.bytes_sent, ioCounters.bytes_recv)
+if __name__=="__main__":
+    print(isConnected())

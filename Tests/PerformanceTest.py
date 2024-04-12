@@ -8,13 +8,13 @@ sys.path.append("..")
 
 from ComputerState import ComputerState
 
-from Utils.InternetUtils import isConnected
+from Utils.InternetUtils import InternetState
 from Utils.BatteryUtils import getBatteryPercentage
 from Utils.ProcessUtils import MemoryState
 
 import time
 
-def benchMarkFuntion(func) -> int:
+def benchMarkFuntion(func: callable) -> int:
     
     startTime = time.time()
     func()
@@ -38,14 +38,14 @@ def runPerformanceTest(func, testCount: int, msThreshold: int):
         averageTimeMs += timeMs
 
     averageTimeMs /= testCount
-    print(f"Tests finished. Average time for {functionName}: {averageTimeMs} ms", flush=True)
+    print(f"Tests finished. Average time for {functionName}: {averageTimeMs} ms (/{msThreshold} ms)", flush=True)
 
 if __name__=="__main__":
     
-    runPerformanceTest(testCount=10, msThreshold=1000, func=isConnected)
+    runPerformanceTest(testCount=10, msThreshold=200, func=InternetState)
     runPerformanceTest(testCount=10, msThreshold=500, func=MemoryState)
     runPerformanceTest(testCount=10, msThreshold=10, func=getBatteryPercentage)
     
-    runPerformanceTest(testCount=10, msThreshold=1500, func=ComputerState)
+    runPerformanceTest(testCount=10, msThreshold=750, func=ComputerState)
 
     print("\nAll tests passed.", flush=True)
