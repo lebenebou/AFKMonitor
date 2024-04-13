@@ -87,7 +87,7 @@ class AFKMonitorInputs:
         
         currentState = ComputerState()
 
-        batteryLimitInput = InputValue("battery limit (%)")
+        batteryLimitInput = InputValue("battery limit % (-1 to end when unplugged)")
         batteryLimitInput.addCondition(lambda p: p == -1 or (p >= 0 and p < currentState.batteryPercent), "battery limit must be between 0 and current battery, or -1 to stop when unlpugged")
         batteryLimitInput.addCondition(lambda p: p != -1 or currentState.pluggedIn, "PC is already unplugged")
         self.batteryLimit = int(batteryLimitInput.getValueFromUser())
