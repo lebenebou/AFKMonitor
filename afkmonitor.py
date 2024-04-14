@@ -39,16 +39,19 @@ def handleKeyboardInterrupt(stateBuffer: list[ComputerState]):
     
     safeExit(stateBuffer)
 
-def startMonitoring(batteryThreshold: int, scriptPath: str, minuteInterval: int = 5, maxStateBufferSize: int = 5):
+def startMonitoring(batteryThreshold: int = 20, scriptPath: str = None, minuteInterval: int = 5, maxStateBufferSize: int = 5):
 
     os.system("cls")
-    print(f"Monitoring every {minuteInterval} minutes until ", file=sys.stdout, end="")
+    print(f"Monitoring until ", end="")
     if batteryThreshold < 0:
-        print(f"unplugged...", file=sys.stdout, flush=True)
+        print(f"unplugged.")
     else:
-        print(f"battery reaches {batteryThreshold}%...", file=sys.stdout, flush=True)
+        print(f"battery reaches {batteryThreshold}%.")
 
-    print(end="\n", file=sys.stdout, flush=True)
+    if scriptPath is not None:
+        print(f"Running {scriptPath} when done.")
+
+    print(end="\n", flush=True)
 
     currentState = ComputerState()
     stateBuffer: list[ComputerState] = []
